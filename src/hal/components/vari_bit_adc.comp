@@ -1,4 +1,11 @@
-/*Component for interfacing 32bit ADC streams. Input Bit-depth is variable in case of populated bit data outside of ADC output depth. single channel version. Simple filter for noise surpression, but will slow down the output as gain increases.*/
+/* 
+ * Component for interfacing 32bit ADC streams. 
+ * Input Bit-depth is variable in case of populated 
+ * bit data outside of ADC output depth. 
+ *
+ * Simple filter for noise surpression, 
+ * but will slow down the output as gain increases.
+ */
 
 component vari_bit_adc;
 
@@ -6,7 +13,7 @@ component vari_bit_adc;
  * Input pins 
  */
 pin in u32 in;
-pin in u32 bit-depth;
+pin in u32 bit_depth;
 pin in float scale_gain;
 pin in bit filter_enable;
 pin in float filter_gain; /* TAU */
@@ -27,8 +34,9 @@ license "GPL";
 
 FUNCTION(_)
 {
-
-    unsigned int mask = 0xFFFFFFFF >> (32 - bit_depth);
+    unsigned int mask = 0xFFFFFFFF;
+    if (bit_depth < 32)
+        mask >>= (32 - bit_depth);
 
     /* input is specified bit depth converted to double */
     double input = scale_gain * (double)(in & mask);
